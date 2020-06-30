@@ -3,7 +3,8 @@
 
 config.ini example
 
-## client_id and client_secret you need to apply for it at
+## client_id and client_secret
+client_id and client_secret you need to apply for it at
 http://developer.baidu.com/console#app/project
 
 
