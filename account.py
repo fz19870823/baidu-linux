@@ -2,6 +2,7 @@ import requests
 import configparser
 from prettytable import PrettyTable
 from function import sizeof_fmt
+from extractor import Extractor
 
 headers = {
     'User-Agent': 'pan.baidu.com'
@@ -21,6 +22,13 @@ class Account:
         self.scope = None
         self.current_dir = '/'
         self.current_dir_content = []
+        self.extractor = None
+
+    def set_extractor(self):
+        self.extractor = Extractor(self.access_token)
+
+    def extract_links(self, fsids):
+        self.extractor.get_dlink(fsids)
 
     def set_account_info(self, access_token, refresh_token, scope):
         self.scope = scope
@@ -86,16 +94,41 @@ class Account:
             'dir': path,
             'limit': '1000',
             'folder': '0',
-            'showempty': '1',
+            # 'showempty': '1',
             'access_token': self.access_token
         }
         res = requests.get(api_url, params=params, headers=headers).json()
         er_code = res['errno']
         if er_code == 0:
-            return True
+            return 'True'
         elif er_code == -7:
             return '文件或目录名错误或无权访问'
         elif er_code == -9:
             return '文件或目录不存在'
         else:
             return '未知错误，错误代码%s!' % er_code
+
+    def recursive_get_fids(self):
+        api_url = 'https://pan.baidu.com/rest/2.0/xpan/multimedia?method=listall'
+        params = {
+            'path': self.current_dir,
+            'recursion': 1,
+            'limit': 100,
+            'access_token': self.access_token
+        }
+        res = requests.get(api_url, headers=headers, params=params).json()
+        if res['errno'] == 0:
+            fsids = []
+            for item in res['list']:
+                if item['isdir'] == 0:
+                    fsid = item['fs_id']
+                    fsids.append(fsid)
+            return fsids
+        else:
+            print('错误，代码%s' % res['errno'])
+            print(res)
+            return
+
+    def set_fsids(self):
+        fids = self.recursive_get_fids()
+        self.extractor.set_fsids(fids)

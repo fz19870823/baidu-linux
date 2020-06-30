@@ -1,7 +1,9 @@
 import webbrowser
 import configparser
 import requests
+import aria2
 from account import Account
+from extractor import Extractor
 
 headers = {
     'User-Agent': 'pan.baidu.com'
@@ -16,7 +18,7 @@ def login():
     # 请求头，依照百度网盘官方文档
     while True:
         name = input('输入账户名称：')
-        if name is not 'api_config':
+        if name is not 'api_config' and name is not 'aria2':
             break
         print('预置变量名，不可使用，请换用其他名字')
     newaccount = Account(name)
@@ -41,6 +43,7 @@ def login():
 def load():
     accounts_list = config.sections()
     accounts_list.remove('api_config')
+    accounts_list.remove('aria2')
     i = 1
     print('有以下账号，请选择使用的账号：')
     for account_name in accounts_list:
@@ -85,7 +88,7 @@ while True:
                 des_dir = sp_command[-1]
                 if des_dir.startswith('/'):
                     status = account.check_existing(des_dir)
-                    if status:
+                    if status is 'True':
                         account.current_dir = des_dir
                     else:
                         print(status)
@@ -95,10 +98,15 @@ while True:
                     else:
                         des_dir = current_dir + des_dir
                     status = account.check_existing(des_dir)
-                    if status:
+                    if status is 'True':
                         account.current_dir = des_dir
                     else:
                         print(status)
-            else:
-                print('错误的命令！')
-            pass
+        elif command.startswith('download'):
+            account.set_extractor()
+            account.set_fsids()
+            link_element = account.extractor.get_dlink()
+            aria2.Aria2().add_task(link_element)
+        else:
+            print('错误的命令！')
+        pass
