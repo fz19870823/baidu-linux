@@ -1,6 +1,8 @@
 from requests import Session
 import threading
 
+
+# not finished
 basic_headers = {
     'User-Agent': 'pan.baidu.com'
 }

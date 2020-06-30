@@ -1,4 +1,5 @@
 import configparser
+import re
 import sys
 import webbrowser
 
@@ -82,7 +83,15 @@ while True:
         if command == 'ls':
             account.list_current_dir()
         elif command.startswith('cd'):
-            sp_command = command.split(' ')
+            if '"' not in command:
+                sp_command = command.split(' ')
+            else:
+                try:
+                    des_fd = re.search(r'"(.*)"', command).group(1)
+                except Exception as e:
+                    print(e)
+                    continue
+                sp_command = [None, des_fd]
             if len(sp_command) == 2:
                 des_dir = sp_command[-1]
                 if des_dir.startswith('/'):
@@ -93,8 +102,10 @@ while True:
                         print(status)
                 elif des_dir == '..':
                     cdir = account.current_dir.split('/')[-1]
-                    des_dir = '/' + account.current_dir.strip('/%s' % cdir)
+                    des_dir = account.current_dir.replace('/%s' % cdir, '')
                     # print(des_dir)
+                    if des_dir == '':
+                        des_dir = '/'
                     status = account.check_existing(des_dir)
                     if status is 'True':
                         account.current_dir = des_dir
@@ -116,7 +127,7 @@ while True:
             account.set_extractor()
             account.set_fsids()
             link_element = account.extractor.get_dlink()
-            aria2.Aria2().add_task(link_element)
+            aria2.Aria2().add_task(link_element, account.current_dir)
         elif command == 'exit':
             sys.exit()
         else:

@@ -26,7 +26,8 @@ class Extractor:
         if response['errno'] == 0:
             for item in response['list']:
                 dlink = item['dlink']
-                link_container.append(dlink + '&access_token=%s' % self.access_token)
+                path = item['path']
+                link_container.append((dlink + '&access_token=%s' % self.access_token, path))
         else:
             print('错误！错误代码%s' % response['errno'])
             print(response)

@@ -17,16 +17,18 @@ class Aria2:
         self.secret = secret
         self.schema = schema
 
-    def add_task(self, link_container):
-        headers = {
-            'header': ['User-Agent: pan.baidu.com']
-        }
+    def add_task(self, link_container, current_dir):
+        headers = 'User-Agent: pan.baidu.com'
         for linke in link_container:
+            save_dir = linke[-1].lower().replace(current_dir.lower(), '')[1:]
+            print(save_dir)
+            continue
             formdata = {
                 'jsonrpc': '2.0',
                 'id': 'qwer',
                 'method': 'aria2.addUri',
-                'params': ['token:%s' % self.secret, [linke], headers]
+                'params': ['token:%s' % self.secret, [linke[0]], {'header': headers, 'out': save_dir}]
             }
             link = '%s://%s:%s/jsonrpc' % (self.schema, self.rpc, self.port)
             requests.post(link, json=formdata)
+            # break
