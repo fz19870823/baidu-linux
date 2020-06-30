@@ -40,7 +40,7 @@ class Account:
 
     def get_account_info(self, code):
         info = requests.get('https://openapi.baidu.com/oauth/2.0/token?grant_type=authorization_code&'
-                            'code=%s&client_id=%sS&client_secret=%s' % (code, client_id, client_secret)).json()
+                            'code=%s&client_id=%s&client_secret=%s' % (code, client_id, client_secret)).json()
         self.access_token = info['access_token']
         self.refresh_token = info['refresh_token']
         self.scope = info['scope']
@@ -52,7 +52,7 @@ class Account:
             'refresh_token': self.refresh_token,
             'scope': self.scope
         }
-        with open('config.ini', 'w+') as configfile:
+        with open('config.ini', 'a+') as configfile:
             config.write(configfile)
 
     def read_account_info(self):

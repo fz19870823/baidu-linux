@@ -21,8 +21,8 @@ class Aria2:
         headers = 'User-Agent: pan.baidu.com'
         for linke in link_container:
             save_dir = linke[-1].lower().replace(current_dir.lower(), '')[1:]
-            print(save_dir)
-            continue
+            # print(save_dir)
+            # continue
             formdata = {
                 'jsonrpc': '2.0',
                 'id': 'qwer',
