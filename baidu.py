@@ -1,9 +1,9 @@
-import webbrowser
 import configparser
-import requests
+import sys
+import webbrowser
+
 import aria2
 from account import Account
-from extractor import Extractor
 
 headers = {
     'User-Agent': 'pan.baidu.com'
@@ -15,7 +15,6 @@ client_secret = config['api_config']['client_secret']
 
 
 def login():
-    # 请求头，依照百度网盘官方文档
     while True:
         name = input('输入账户名称：')
         if name is not 'api_config' and name is not 'aria2':
@@ -94,7 +93,8 @@ while True:
                         print(status)
                 elif des_dir == '..':
                     cdir = account.current_dir.split('/')[-1]
-                    des_dir = account.current_dir.strip('/%s' % cdir)
+                    des_dir = '/' + account.current_dir.strip('/%s' % cdir)
+                    # print(des_dir)
                     status = account.check_existing(des_dir)
                     if status is 'True':
                         account.current_dir = des_dir
@@ -118,7 +118,7 @@ while True:
             link_element = account.extractor.get_dlink()
             aria2.Aria2().add_task(link_element)
         elif command == 'exit':
-            break
+            sys.exit()
         else:
             print('错误的命令！')
         pass

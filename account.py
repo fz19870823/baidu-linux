@@ -108,7 +108,7 @@ class Account:
         else:
             return '未知错误，错误代码%s!' % er_code
 
-    def recursive_get_fids(self):
+    def recursive_get_fsids(self):
         api_url = 'https://pan.baidu.com/rest/2.0/xpan/multimedia?method=listall'
         params = {
             'path': self.current_dir,
@@ -130,5 +130,5 @@ class Account:
             return
 
     def set_fsids(self):
-        fids = self.recursive_get_fids()
+        fids = self.recursive_get_fsids()
         self.extractor.set_fsids(fids)
