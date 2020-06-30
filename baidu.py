@@ -107,6 +107,8 @@ while True:
             account.set_fsids()
             link_element = account.extractor.get_dlink()
             aria2.Aria2().add_task(link_element)
+        elif command == 'exit':
+            break
         else:
             print('错误的命令！')
         pass
