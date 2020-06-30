@@ -4,7 +4,7 @@
 config.ini example
 
 
-'''
+```
 [api_config]
 client_id = 
 client_secret = 
@@ -19,4 +19,4 @@ schema =
 access_token = 
 refresh_token = 
 scope = 
-'''
+```
