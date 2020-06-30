@@ -92,6 +92,16 @@ while True:
                         account.current_dir = des_dir
                     else:
                         print(status)
+                elif des_dir == '..':
+                    cdir = account.current_dir.split('/')[-1]
+                    des_dir = account.current_dir.strip('/%s' % cdir)
+                    status = account.check_existing(des_dir)
+                    if status is 'True':
+                        account.current_dir = des_dir
+                    else:
+                        print(status)
+                        print('出错，重置为根目录！')
+                        account.current_dir = '/'
                 else:
                     if current_dir is not '/':
                         des_dir = current_dir + '/' + des_dir
@@ -107,6 +117,8 @@ while True:
             account.set_fsids()
             link_element = account.extractor.get_dlink()
             aria2.Aria2().add_task(link_element)
+        elif command == 'exit':
+            break
         else:
             print('错误的命令！')
         pass
