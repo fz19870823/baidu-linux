@@ -17,7 +17,7 @@ secret = secret
 port = 6800
 schema = http
 
-## it will be added automatic after add a account
+# it will be added automatic after add a account
 [name1]
 access_token = 
 refresh_token = 
