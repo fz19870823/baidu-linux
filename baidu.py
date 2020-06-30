@@ -116,7 +116,7 @@ while True:
             account.set_extractor()
             account.set_fsids()
             link_element = account.extractor.get_dlink()
-            aria2.Aria2().add_task(link_element)
+            aria2.Aria2().add_task(link_element, account.current_dir)
         elif command == 'exit':
             sys.exit()
         else:
