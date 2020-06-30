@@ -130,6 +130,8 @@ while True:
             aria2.Aria2().add_task(link_element, account.current_dir)
         elif command == 'exit':
             sys.exit()
+        elif command == 'switch':
+            account = None
         else:
             print('错误的命令！')
         pass
