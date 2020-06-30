@@ -5,6 +5,8 @@
 client_id and client_secret you need to apply for it at
 http://developer.baidu.com/console#app/project
 
+you need supply your real personal information
+
 config.ini example
 ```
 [api_config]
