@@ -22,9 +22,17 @@ class Account:
         self.current_dir = '/'
         self.current_dir_content = []
         self.extractor = None
+        self.download_dir = None
 
     def set_extractor(self):
         self.extractor = Extractor(self.access_token)
+
+    def set_download_dir(self, path):
+        if path.startswith('/'):
+            pass
+        else:
+            path = str(PurePosixPath(self.current_dir, path))
+        self.download_dir = path
 
     def extract_links(self, fsids):
         self.extractor.get_dlink(fsids)
@@ -122,7 +130,7 @@ class Account:
     def recursive_get_fsids(self):
         api_url = 'https://pan.baidu.com/rest/2.0/xpan/multimedia?method=listall'
         params = {
-            'path': self.current_dir,
+            'path': self.download_dir,
             'recursion': 1,
             'limit': 100,
             'access_token': self.access_token
@@ -140,7 +148,8 @@ class Account:
             print(res)
             return
 
-    def set_fsids(self):
+    def set_fsids(self, path):
+        self.set_download_dir(path)
         fsids = self.recursive_get_fsids()
         self.extractor.set_fsids(fsids)
 
