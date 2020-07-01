@@ -116,12 +116,15 @@ while True:
             except IndexError:
                 continue
         elif command == 'download':
-            path = argv[1]
+            try:
+                path = argv[1]
+            except IndexError:
+                path = account.current_dir
             account.set_extractor()
             account.set_fsids(path)
             link_element = account.extractor.get_dlink()
-            print(link_element)
-            # aria2.Aria2().add_task(link_element, account.current_dir)
+            # print(link_element)
+            aria2.Aria2().add_task(link_element, account.download_dir)
         elif command == 'exit':
             sys.exit()
         elif command == 'switch':
