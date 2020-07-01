@@ -141,8 +141,8 @@ class Account:
             return
 
     def set_fsids(self):
-        fids = self.recursive_get_fsids()
-        self.extractor.set_fsids(fids)
+        fsids = self.recursive_get_fsids()
+        self.extractor.set_fsids(fsids)
 
     def delete_files(self, path):
         if path.startswith('/'):
