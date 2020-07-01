@@ -98,7 +98,8 @@ while True:
             except IndexError:
                 des_folder = '/'
             if des_folder == '..':
-                des_folder = str(account.parent_dir)
+                des_folder = str(account.parent_dir())
+                # print(des_folder)
             else:
                 pass
             status = account.check_existing(des_folder)
