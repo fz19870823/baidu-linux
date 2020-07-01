@@ -34,7 +34,12 @@ class Account:
         self.refresh_token = refresh_token
         self.access_token = access_token
 
-    def set_current_dir(self, path):
+    def set_current_dir(self, path: str):
+        if path.startswith('/'):
+            pass
+        else:
+            path = str(PurePosixPath(self.current_dir, path))
+            # print(path)
         self.current_dir = path
 
     def get_account_info(self, code):
@@ -90,7 +95,7 @@ class Account:
         info_list = res['list']
         return info_list
 
-    def check_existing(self, path):
+    def check_existing(self, path: str):
         if path.startswith('/'):
             pass
         else:

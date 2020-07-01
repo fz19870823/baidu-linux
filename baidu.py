@@ -98,12 +98,12 @@ while True:
             except IndexError:
                 des_folder = '/'
             if des_folder == '..':
-                des_folder = account.parent_dir
+                des_folder = str(account.parent_dir)
             else:
                 pass
             status = account.check_existing(des_folder)
             if status is 'True':
-                account.current_dir = des_folder
+                account.set_current_dir(des_folder)
             else:
                 print(status)
                 print('出错，重置为根目录！')
