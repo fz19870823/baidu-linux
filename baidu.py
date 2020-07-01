@@ -1,10 +1,13 @@
 import configparser
-import re
+# import re
 import sys
+import shlex
 import webbrowser
+# import getopt
 
 import aria2
 from account import Account
+from function import *
 
 headers = {
     'User-Agent': 'pan.baidu.com'
@@ -55,12 +58,12 @@ def load():
         print(e)
         return
     if account_no <= len(accounts_list):
-        account = Account(accounts_list[account_no - 1])
+        account_old = Account(accounts_list[account_no - 1])
     else:
         print('不存在的序号！')
         return
-    account.read_account_info()
-    return account
+    account_old.read_account_info()
+    return account_old
 
 
 def start():
@@ -79,51 +82,39 @@ while True:
     account = start()
     while account is not None:
         current_dir = account.current_dir
-        command = input('现在所在目录：%s 命令：' % current_dir)
+        commands = input('现在所在目录：%s 命令：' % current_dir)
+        argv = shlex.split(commands)
+        command = argv[0]
         if command == 'ls':
-            account.list_current_dir()
-        elif command.startswith('cd'):
-            if '"' not in command:
-                sp_command = command.split(' ')
+            try:
+                path = argv[1]
+                dir_info = account.dir_list_info(path)
+            except IndexError:
+                dir_info = account.current_dir_list()
+            print_dir_info(dir_info)
+        elif command == 'cd':
+            try:
+                des_folder = argv[1]
+            except IndexError:
+                des_folder = '/'
+            if des_folder == '..':
+                des_folder = account.parent_dir
             else:
-                try:
-                    des_fd = re.search(r'"(.*)"', command).group(1)
-                except Exception as e:
-                    print(e)
-                    continue
-                sp_command = [None, des_fd]
-            if len(sp_command) == 2:
-                des_dir = sp_command[-1]
-                if des_dir.startswith('/'):
-                    status = account.check_existing(des_dir)
-                    if status is 'True':
-                        account.current_dir = des_dir
-                    else:
-                        print(status)
-                elif des_dir == '..':
-                    cdir = account.current_dir.split('/')[-1]
-                    des_dir = account.current_dir.replace('/%s' % cdir, '')
-                    # print(des_dir)
-                    if des_dir == '':
-                        des_dir = '/'
-                    status = account.check_existing(des_dir)
-                    if status is 'True':
-                        account.current_dir = des_dir
-                    else:
-                        print(status)
-                        print('出错，重置为根目录！')
-                        account.current_dir = '/'
-                else:
-                    if current_dir is not '/':
-                        des_dir = current_dir + '/' + des_dir
-                    else:
-                        des_dir = current_dir + des_dir
-                    status = account.check_existing(des_dir)
-                    if status is 'True':
-                        account.current_dir = des_dir
-                    else:
-                        print(status)
-        elif command.startswith('download'):
+                pass
+            status = account.check_existing(des_folder)
+            if status is 'True':
+                account.current_dir = des_folder
+            else:
+                print(status)
+                print('出错，重置为根目录！')
+                account.current_dir = '/'
+        elif command == 'rm':
+            try:
+                destination = argv[1]
+                account.delete_files(destination)
+            except IndexError:
+                continue
+        elif command == 'download':
             account.set_extractor()
             account.set_fsids()
             link_element = account.extractor.get_dlink()
