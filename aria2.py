@@ -1,5 +1,6 @@
 import configparser
 import requests
+from pathlib import PurePosixPath
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -20,7 +21,7 @@ class Aria2:
     def add_task(self, link_container, current_dir):
         headers = 'User-Agent: pan.baidu.com'
         for linke in link_container:
-            save_dir = linke[-1].lower().replace(current_dir.lower(), '')[1:]
+            save_dir = str(PurePosixPath(linke[-1]).relative_to(PurePosixPath(current_dir)))
             # print(save_dir)
             # continue
             formdata = {

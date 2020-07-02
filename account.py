@@ -1,5 +1,6 @@
 import requests
 import configparser
+import sys
 from extractor import Extractor
 from pathlib import PurePosixPath
 
@@ -105,34 +106,41 @@ class Account:
 
     def check_existing(self, path: str):
         if path.startswith('/'):
-            pass
+            if path != '/':
+                path_des = str(PurePosixPath(path).parent)
+            else:
+                return '/'
         else:
-            path = str(PurePosixPath(self.current_dir).joinpath(path))
+            path_des = str(PurePosixPath(self.current_dir).joinpath(path).parent)
+        info_given = PurePosixPath(path).parts[-1]
         api_url = 'https://pan.baidu.com/rest/2.0/xpan/file?method=list'
         params = {
-            'dir': path,
+            'dir': path_des,
             'limit': '1000',
-            'folder': '0',
+            'folder': '1',
             # 'showempty': '1',
             'access_token': self.access_token
         }
         res = requests.get(api_url, params=params, headers=headers).json()
         er_code = res['errno']
         if er_code == 0:
-            return 'True'
-        elif er_code == -7:
-            return '文件或目录名错误或无权访问'
-        elif er_code == -9:
-            return '文件或目录不存在'
+            for bb in res['list']:
+                info_get = PurePosixPath(bb['path']).parts[-1]
+                # print(info_get)
+                # print(info_given)
+                # sys.exit()
+                if str(info_get).lower() == info_given.lower():
+                    return bb['path']
         else:
-            return '未知错误，错误代码%s!' % er_code
+            print('错误，错误代码%s!' % er_code)
+            return None
 
     def recursive_get_fsids(self):
         api_url = 'https://pan.baidu.com/rest/2.0/xpan/multimedia?method=listall'
         params = {
             'path': self.download_dir,
             'recursion': 1,
-            'limit': 100,
+            'limit': 1000,
             'access_token': self.access_token
         }
         res = requests.get(api_url, headers=headers, params=params).json()

@@ -16,20 +16,23 @@ class Extractor:
         self.fsids = fsids
 
     def get_dlink(self):
-        params = {
-            'access_token': self.access_token,
-            'fsids': str(self.fsids),
-            'dlink': 1
-        }
-        response = requests.get(api_url, params=params, headers=headers).json()
         link_container = []
-        if response['errno'] == 0:
-            for item in response['list']:
-                dlink = item['dlink']
-                path = item['path']
-                link_container.append((dlink + '&access_token=%s' % self.access_token, path))
-        else:
-            print('错误！错误代码%s' % response['errno'])
-            print(response)
-            return
+        for fsid_list in [self.fsids[i:i+99] for i in range(0, len(self.fsids), 98)]:
+            # print(fsid_list)
+            # continue
+            params = {
+                'access_token': self.access_token,
+                'fsids': str(fsid_list),
+                'dlink': 1
+            }
+            response = requests.get(api_url, params=params, headers=headers).json()
+            if response['errno'] == 0:
+                for item in response['list']:
+                    dlink = item['dlink']
+                    path = item['path']
+                    link_container.append((dlink + '&access_token=%s' % self.access_token, path))
+            else:
+                print('错误！错误代码%s' % response['errno'])
+                print(response)
+                return
         return link_container

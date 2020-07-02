@@ -103,8 +103,8 @@ while True:
             else:
                 pass
             status = account.check_existing(des_folder)
-            if status is 'True':
-                account.set_current_dir(des_folder)
+            if status is not None:
+                account.set_current_dir(status)
             else:
                 print(status)
                 print('出错，重置为根目录！')
@@ -124,6 +124,7 @@ while True:
             account.set_fsids(path)
             link_element = account.extractor.get_dlink()
             # print(link_element)
+            # sys.exit()
             aria2.Aria2().add_task(link_element, account.download_dir)
         elif command == 'exit':
             sys.exit()
