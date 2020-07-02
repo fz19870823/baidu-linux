@@ -2,10 +2,9 @@
 Original API Document https://pan.baidu.com/union/document
 
 ## client_id and client_secret
-client_id and client_secret you need to apply for it at
+client_id and client_secret you need to apply it at
 http://developer.baidu.com/console#app/project
-
-you need supply your real personal information
+with your real personal information.
 
 config.ini example
 ```
