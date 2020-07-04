@@ -1,3 +1,6 @@
+import random
+import string
+
 from prettytable import PrettyTable
 
 
@@ -20,3 +23,8 @@ def print_dir_info(info_list):
         file_size = sizeof_fmt(item['size'])
         table.add_row([item['server_filename'], f_type, file_size])
     print(table)
+
+
+def random_str(num):
+    salt = ''.join(random.sample(string.ascii_letters + string.digits, num))
+    return salt
