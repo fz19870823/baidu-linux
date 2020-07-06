@@ -172,11 +172,12 @@ class Account:
             'opera': 'delete'
         }
         formdata = {
-            'filelist': [path],
+            'filelist': '["%s"]' % path,
             'async': 1
         }
-        res = requests.post(api_url, params=params, headers=headers, json=formdata).json()
-        print(res)
+        res = requests.post(api_url, params=params, headers=headers, data=formdata).json()
+        if res['errno'] is not 0:
+            print(res)
 
     def parent_dir(self):
         current_dir = PurePosixPath(self.current_dir)
