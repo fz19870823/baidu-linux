@@ -1,6 +1,7 @@
 import configparser
 import requests
 from pathlib import PurePosixPath
+from function import *
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -20,16 +21,18 @@ class Aria2:
 
     def add_task(self, link_container, current_dir):
         headers = 'User-Agent: pan.baidu.com'
+        final_post_data = []
         for linke in link_container:
             save_dir = str(PurePosixPath(linke[-1]).relative_to(PurePosixPath(current_dir)))
             # print(save_dir)
             # continue
             formdata = {
                 'jsonrpc': '2.0',
-                'id': 'qwer',
+                'id': random_str(16),
                 'method': 'aria2.addUri',
                 'params': ['token:%s' % self.secret, [linke[0]], {'header': headers, 'out': save_dir}]
             }
-            link = '%s://%s:%s/jsonrpc' % (self.schema, self.rpc, self.port)
-            requests.post(link, json=formdata)
-            # break
+            final_post_data.append(formdata)
+        link = '%s://%s:%s/jsonrpc' % (self.schema, self.rpc, self.port)
+        requests.post(link, json=final_post_data)
+        # break
