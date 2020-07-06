@@ -12,10 +12,12 @@ from function import *
 headers = {
     'User-Agent': 'pan.baidu.com'
 }
+
 config = configparser.ConfigParser()
 config.read('config.ini')
 client_id = config['api_config']['client_id']
 client_secret = config['api_config']['client_secret']
+
 
 
 def login():
@@ -79,6 +81,7 @@ def start():
 
 
 while True:
+    if config
     account = start()
     while account is not None:
         current_dir = account.current_dir
