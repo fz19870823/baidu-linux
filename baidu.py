@@ -81,7 +81,6 @@ def start():
 
 
 while True:
-    if config
     account = start()
     while account is not None:
         current_dir = account.current_dir
@@ -115,14 +114,32 @@ while True:
         elif command == 'rm':
             try:
                 destination = argv[1]
-                account.delete_files(destination)
+                if destination == '*':
+                    all_des = trans_info_to_path(account.current_dir_list())
+                    # print(all_des)
+                    # sys.exit()
+                    account.delete_files(all_des)
+                else:
+                    account.delete_files(destination)
             except IndexError:
+                print('没有文件或文件夹名字是：%s' % destination)
                 continue
         elif command == 'download':
             try:
                 path = argv[1]
             except IndexError:
                 path = account.current_dir
+            try:
+                opt = argv[2]
+                if opt == 'exclude':
+                    try:
+                        exclude_list = argv[3]
+                    except IndexError:
+                        pass
+
+            except IndexError:
+                pass
+
             account.set_extractor()
             account.set_fsids(path)
             link_element = account.extractor.get_dlink()

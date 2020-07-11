@@ -162,19 +162,23 @@ class Account:
         self.extractor.set_fsids(fsids)
 
     def delete_files(self, path):
-        if path.startswith('/'):
-            pass
-        else:
-            path = str(PurePosixPath(self.current_dir).joinpath(path))
+        if type(path) is not list:
+            if path.startswith('/'):
+                path_p = path
+            else:
+                path_p = str(PurePosixPath(self.current_dir).joinpath(path))
+        elif type(path) is list:
+            path_p = '","'.join(path)
         api_url = 'https://pan.baidu.com/rest/2.0/xpan/file?method=filemanager'
         params = {
             'access_token': self.access_token,
             'opera': 'delete'
         }
         formdata = {
-            'filelist': '["%s"]' % path,
+            'filelist': '["%s"]' % path_p,
             'async': 1
         }
+        # print(formdata)
         res = requests.post(api_url, params=params, headers=headers, data=formdata).json()
         if res['errno'] is not 0:
             print(res)

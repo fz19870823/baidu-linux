@@ -28,3 +28,11 @@ def print_dir_info(info_list):
 def random_str(num):
     salt = ''.join(random.sample(string.ascii_letters + string.digits, num))
     return salt
+
+
+def trans_info_to_path(info: list):
+    path_list = []
+    for item in info:
+        f_path = item['path']
+        path_list.append(f_path)
+    return path_list
