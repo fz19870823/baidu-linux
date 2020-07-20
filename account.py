@@ -44,6 +44,12 @@ class Account:
         self.refresh_token = refresh_token
         self.access_token = access_token
 
+    def logout(self):
+        name = self.name
+        config.remove_section(name)
+        with open('config.ini', 'w') as target:
+            config.write(target)
+
     def set_current_dir(self, path: str):
         if path.startswith('/'):
             pass
@@ -210,3 +216,14 @@ class Account:
         res = requests.post(api_url, params=params, headers=headers, data=formdata).json()
         if res['errno'] is not 0:
             print(res)
+
+    def refresh_ac_token(self):
+        api_url = 'https://openapi.baidu.com/oauth/2.0/token?grant_type=refresh_token&refresh_token=%s' \
+                  '&client_id=%s&client_secret=%s' % (self.refresh_token, client_id, client_secret)
+        res = requests.get(api_url).json()
+        new_access_token = res['access_token']
+        new_refresh_token = res['refresh_token']
+        new_scope = res['scope']
+        self.set_account_info(new_access_token, new_refresh_token, new_scope)
+        self.logout()
+        self.save_account_info()

@@ -153,9 +153,14 @@ while True:
                 print('格式错误！')
                 continue
             account.rename(old_name, new_name)
+        elif command == 'reftk':
+            account.refresh_ac_token()
         elif command == 'exit':
             sys.exit()
         elif command == 'switch':
+            account = None
+        elif command == 'logout':
+            account.logout()
             account = None
         else:
             print('错误的命令！')
