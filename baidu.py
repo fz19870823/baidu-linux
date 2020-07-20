@@ -19,7 +19,6 @@ client_id = config['api_config']['client_id']
 client_secret = config['api_config']['client_secret']
 
 
-
 def login():
     while True:
         name = input('输入账户名称：')
@@ -146,6 +145,14 @@ while True:
             # print(link_element)
             # sys.exit()
             aria2.Aria2().add_task(link_element, account.download_dir)
+        elif command == 'rename':
+            try:
+                old_name = argv[1]
+                new_name = argv[2]
+            except IndexError:
+                print('格式错误！')
+                continue
+            account.rename(old_name, new_name)
         elif command == 'exit':
             sys.exit()
         elif command == 'switch':

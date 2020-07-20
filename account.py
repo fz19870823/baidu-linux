@@ -1,6 +1,7 @@
 import requests
 import configparser
 # import sys
+import re
 from extractor import Extractor
 from pathlib import PurePosixPath
 
@@ -187,3 +188,25 @@ class Account:
         current_dir = PurePosixPath(self.current_dir)
         parent_dir = str(current_dir.parent)
         return parent_dir
+
+    def rename(self, old_name: str, new_name: str):
+        if old_name.startswith('/'):
+            old_path = old_name
+        else:
+            old_path = str(PurePosixPath(self.current_dir).joinpath(old_name))
+        if '/' in new_name:
+            new_path = re.sub('.*/', '', new_name)
+        else:
+            new_path = new_name
+        api_url = 'https://pan.baidu.com/rest/2.0/xpan/file?method=filemanager'
+        params = {
+            'access_token': self.access_token,
+            'opera': 'rename'
+        }
+        formdata = {
+            'async': 1,
+            'filelist': '[{"path":"%s","newname":"%s","ondup":"fail"}]' % (old_path, new_path)
+        }
+        res = requests.post(api_url, params=params, headers=headers, data=formdata).json()
+        if res['errno'] is not 0:
+            print(res)
