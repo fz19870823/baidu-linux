@@ -64,6 +64,7 @@ def load():
         print('不存在的序号！')
         return
     account_old.read_account_info()
+    help_c()
     return account_old
 
 
@@ -167,6 +168,8 @@ while True:
         elif command == 'logout':
             account.logout()
             account = None
+        elif command == 'help':
+            help_c()
         else:
             print('错误的命令！')
         pass
