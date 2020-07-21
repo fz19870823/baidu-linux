@@ -126,7 +126,7 @@ while True:
                 else:
                     account.delete_files(destination)
             except IndexError:
-                print('没有文件或文件夹名字是：%s' % destination)
+                print('命令格式错误！')
                 continue
         elif command == 'download':
             try:
