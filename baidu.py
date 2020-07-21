@@ -82,6 +82,11 @@ def start():
 while True:
     account = start()
     while account is not None:
+        check_act = account.check_access_token()
+        if not check_act:
+            print('账户信息错误，无法获取信息，请更换账号或重新添加！')
+            account = None
+            continue
         current_dir = account.current_dir
         commands = input('现在所在目录：%s 命令：' % current_dir)
         argv = shlex.split(commands)

@@ -169,6 +169,7 @@ class Account:
         self.extractor.set_fsids(fsids)
 
     def delete_files(self, path):
+        path_p = ''
         if type(path) is not list:
             if path.startswith('/'):
                 path_p = path
@@ -227,3 +228,27 @@ class Account:
         self.set_account_info(new_access_token, new_refresh_token, new_scope)
         self.logout()
         self.save_account_info()
+
+    def check_access_token(self, attempt_no):
+        api_url = 'https://pan.baidu.com/rest/2.0/xpan/file?method=list'
+        params = {
+            'dir': '/',
+            'limit': '1000',
+            'folder': '0',
+            # 'showempty': '1',
+            'access_token': self.access_token
+        }
+        res = requests.get(api_url, params=params, headers=headers).json()
+        errno = res['errno']
+        if errno == '0':
+            pass
+        else:
+            if attempt_no <= 3:
+                attempt_no += 1
+                print('access_token 验证失败，尝试刷新.....第%s次尝试...' % attempt_no)
+                self.refresh_ac_token()
+                self.check_access_token(attempt_no)
+            else:
+                return False
+        print('access_token 正常可用...')
+        return True
