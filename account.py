@@ -16,7 +16,10 @@ client_secret = config['api_config']['client_secret']
 
 class Account:
 
-    # 定义 account 属性
+    """
+    生成account对象，内容包含各种account信息
+    声明时必须指定名称
+    """
     def __init__(self, name):
         self.name = name
         self.access_token = None
