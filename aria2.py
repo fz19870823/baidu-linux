@@ -1,7 +1,7 @@
 import configparser
 import requests
 from pathlib import PurePosixPath
-from function import *
+from function import random_str
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -13,6 +13,7 @@ secret = config['aria2']['secret']
 
 class Aria2:
 
+    # 定义 aria2 服务器参数
     def __init__(self):
         self.rpc = rpc
         self.port = port

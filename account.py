@@ -16,6 +16,7 @@ client_secret = config['api_config']['client_secret']
 
 class Account:
 
+    # 定义 account 属性
     def __init__(self, name):
         self.name = name
         self.access_token = None
@@ -188,7 +189,7 @@ class Account:
         }
         # print(formdata)
         res = requests.post(api_url, params=params, headers=headers, data=formdata).json()
-        if res['errno'] is not 0:
+        if res['errno'] != 0:
             print(res)
 
     def parent_dir(self):

@@ -7,7 +7,7 @@ import webbrowser
 
 import aria2
 from account import Account
-from function import *
+from function import help_c, print_dir_info, trans_info_to_path
 
 headers = {
     'User-Agent': 'pan.baidu.com'
@@ -22,7 +22,7 @@ client_secret = config['api_config']['client_secret']
 def login():
     while True:
         name = input('输入账户名称：')
-        if name is not 'api_config' and name is not 'aria2':
+        if name != 'api_config' and name != 'aria2':
             break
         print('预置变量名，不可使用，请换用其他名字')
     newaccount = Account(name)
