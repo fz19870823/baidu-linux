@@ -1,9 +1,9 @@
 # baidu-linux
-Original API Document https://pan.baidu.com/union/document
+Original API Document <https://pan.baidu.com/union/document>
 
 ## client_id and client_secret
 client_id and client_secret you need to apply it at
-http://developer.baidu.com/console#app/project
+<http://developer.baidu.com/console#app/project>
 
 ### Attention! You need to verify your account with your real personal information
 
