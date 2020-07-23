@@ -8,7 +8,7 @@ client_id and client_secret you need to apply it at
 ### Attention! You need to verify your account with your real personal information
 
 config.ini example
-```
+``` ini
 [api_config]
 client_id =
 client_secret =
