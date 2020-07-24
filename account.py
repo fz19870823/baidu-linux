@@ -15,12 +15,15 @@ client_secret = config['api_config']['client_secret']
 
 
 class Account:
-
     """
     生成account对象，内容包含各种account信息
     声明时必须指定名称
     """
     def __init__(self, name):
+        """
+         必要参数
+        :param name:
+        """
         self.name = name
         self.access_token = None
         self.refresh_token = None
@@ -40,8 +43,9 @@ class Account:
             path = str(PurePosixPath(self.current_dir, path))
         self.download_dir = path
 
-    def extract_links(self, fsids):
-        self.extractor.get_dlink(fsids)
+    # def extract_links(self, fsids):
+    #     self.extractor.set_fsids(fsids)
+    #     self.extractor.get_dlink()
 
     def set_account_info(self, access_token, refresh_token, scope):
         self.scope = scope
@@ -174,12 +178,12 @@ class Account:
 
     def delete_files(self, path):
         path_p = ''
-        if type(path) is not list:
+        if type(path) is not 'list':
             if path.startswith('/'):
                 path_p = path
             else:
                 path_p = str(PurePosixPath(self.current_dir).joinpath(path))
-        elif type(path) is list:
+        elif type(path) is 'list':
             path_p = '","'.join(path)
         api_url = 'https://pan.baidu.com/rest/2.0/xpan/file?method=filemanager'
         params = {
