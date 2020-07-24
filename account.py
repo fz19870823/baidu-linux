@@ -1,6 +1,6 @@
 import requests
 import configparser
-# import sys
+import sys
 import re
 from extractor import Extractor
 from pathlib import PurePosixPath
@@ -99,14 +99,15 @@ class Account:
             'access_token': self.access_token
         }
         res = requests.get(api_url, params=params, headers=headers).json()
+        # print(res)
         info_list = res['list']
         return info_list
 
-    def dir_list_info(self, path: str):
-        if path.startswith('/'):
-            pass
+    def dir_list_info(self, path_par: str):
+        if path_par.startswith('/'):
+            path = path_par
         else:
-            path = self.current_dir + '/' + path
+            path = str(PurePosixPath(self.current_dir).joinpath(path_par))
         api_url = 'https://pan.baidu.com/rest/2.0/xpan/file?method=list'
         params = {
             'dir': path,
@@ -116,6 +117,7 @@ class Account:
             'access_token': self.access_token
         }
         res = requests.get(api_url, params=params, headers=headers).json()
+        # print(res)
         info_list = res['list']
         return info_list
 
@@ -165,6 +167,13 @@ class Account:
                 if item['isdir'] == 0:
                     fsid = item['fs_id']
                     fsids.append(fsid)
+            if len(fsids) == 0:
+                search_r = self.search_files(self.download_dir)
+                if search_r != None:
+                    for item in search_r:
+                        if item['isdir'] == 0:
+                            fsid = item['fs_id']
+                            fsids.append(fsid)
             return fsids
         else:
             print('错误，代码%s' % res['errno'])
@@ -172,9 +181,9 @@ class Account:
             return
 
     def set_fsids(self, path):
-        self.set_download_dir(path)
-        fsids = self.recursive_get_fsids()
-        self.extractor.set_fsids(fsids)
+        info = self.search_files(path)
+        print(info)
+        sys.exit()
 
     def delete_files(self, path):
         path_p = ''
@@ -236,6 +245,7 @@ class Account:
         self.set_account_info(new_access_token, new_refresh_token, new_scope)
         self.logout()
         self.save_account_info()
+        self.check_access_token(0)
 
     def check_access_token(self, attempt_no):
         api_url = 'https://pan.baidu.com/rest/2.0/xpan/file?method=list'
@@ -248,7 +258,7 @@ class Account:
         }
         res = requests.get(api_url, params=params, headers=headers).json()
         errno = res['errno']
-        if errno == '0':
+        if errno == 0:
             pass
         else:
             if attempt_no <= 3:
@@ -260,3 +270,24 @@ class Account:
                 return False
         print('access_token 正常可用...')
         return True
+
+    def search_files(self, key_word_s):
+        if '/' in key_word_s:
+            key_word = re.sub('.*/', '', key_word_s)
+        else:
+            key_word = key_word_s
+        api_url = 'https://pan.baidu.com/rest/2.0/xpan/file?method=search'
+        params = {
+            'dir': self.current_dir,
+            'key': key_word,
+            'recursion': 1,
+            'access_token': self.access_token
+        }
+        res = requests.get(api_url, headers=headers, params=params).json()
+        errno = res['errno']
+        if errno == 0:
+            result = res['list']
+            return result
+        else:
+            print(res)
+            return
