@@ -84,9 +84,9 @@ def start():
     return account_s
 
 
-while True:
+def main():
     account = start()
-    while account is not None:
+    while account != None:
         current_dir = account.current_dir
         commands = input('现在所在目录：%s 命令：' % current_dir)
         argv = shlex.split(commands)
@@ -172,3 +172,7 @@ while True:
         else:
             print('错误的命令！')
         pass
+
+
+while True:
+    main()

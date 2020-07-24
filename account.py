@@ -20,6 +20,7 @@ class Account:
     声明时必须指定名称
     """
     def __init__(self, name):
+        
         """
         必要参数
         :param name:
@@ -233,7 +234,7 @@ class Account:
             'filelist': '[{"path":"%s","newname":"%s","ondup":"fail"}]' % (old_path, new_path)
         }
         res = requests.post(api_url, params=params, headers=headers, data=formdata).json()
-        if res['errno'] is not 0:
+        if res['errno'] != 0:
             print(res)
 
     def refresh_ac_token(self):
