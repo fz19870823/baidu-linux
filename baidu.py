@@ -133,13 +133,13 @@ def main():
                 path = argv[1]
             except IndexError:
                 path = account.current_dir
-            try:
-                opt = argv[2]
-                if opt == 'exclude':
-                    try:
-                        exclude_list = argv[3]
-                    except IndexError:
-                        pass
+            # try:
+            #     opt = argv[2]
+            #     if opt == 'exclude':
+            #         try:
+            #             exclude_list = argv[3]
+            #         except IndexError:
+            #             pass
 
             except IndexError:
                 pass
