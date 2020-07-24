@@ -1,5 +1,5 @@
 from requests import Session
-import threading
+# import threading
 
 
 # not finished
@@ -11,6 +11,9 @@ basic_headers = {
 class Downloader:
 
     def __init__(self, url, file_name, path):
+        """
+        init downloader
+        """
         self.url = url
         self.threads = 20
         self.path = path
@@ -33,5 +36,5 @@ class Downloader:
         size = r.headers['Content-Length']
         self.size = size
 
-    def download_start(self):
-        res = self.session.get(self.url, headers=self.headers, stream=True)
+    # def download_start(self):
+    #     res = self.session.get(self.url, headers=self.headers, stream=True)

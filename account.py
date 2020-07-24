@@ -1,6 +1,6 @@
 import requests
 import configparser
-import sys
+# import sys
 import re
 from extractor import Extractor
 from pathlib import PurePosixPath

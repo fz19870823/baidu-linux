@@ -9,6 +9,9 @@ headers = {
 class Extractor:
 
     def __init__(self, access_token):
+        """
+        init Extractor
+        """
         self.access_token = access_token
         self.fsids = None
 
