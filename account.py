@@ -170,6 +170,7 @@ class Account:
             if len(fsids) == 0:
                 search_r = self.search_files(self.download_dir)
                 if search_r != None:
+                    self.set_download_dir(self.current_dir)
                     for item in search_r:
                         if item['isdir'] == 0:
                             fsid = item['fs_id']
