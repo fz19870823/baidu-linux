@@ -21,7 +21,7 @@ class Account:
     """
     def __init__(self, name):
         """
-         必要参数
+        必要参数
         :param name:
         """
         self.name = name
@@ -188,12 +188,12 @@ class Account:
 
     def delete_files(self, path):
         path_p = ''
-        if type(path) is not 'list':
+        if type(path) != list:
             if path.startswith('/'):
                 path_p = path
             else:
                 path_p = str(PurePosixPath(self.current_dir).joinpath(path))
-        elif type(path) is 'list':
+        elif type(path) == list:
             path_p = '","'.join(path)
         api_url = 'https://pan.baidu.com/rest/2.0/xpan/file?method=filemanager'
         params = {

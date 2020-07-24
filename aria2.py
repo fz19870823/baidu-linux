@@ -15,6 +15,10 @@ class Aria2:
 
     # 定义 aria2 服务器参数
     def __init__(self):
+        """
+        init Aria2 handler
+        param: None
+        """
         self.rpc = rpc
         self.port = port
         self.secret = secret

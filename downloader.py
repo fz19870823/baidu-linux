@@ -13,6 +13,7 @@ class Downloader:
     def __init__(self, url, file_name, path):
         """
         init downloader
+        param: file_name, Path
         """
         self.url = url
         self.threads = 20
