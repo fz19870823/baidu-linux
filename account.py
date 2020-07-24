@@ -181,9 +181,9 @@ class Account:
             return
 
     def set_fsids(self, path):
-        info = self.search_files(path)
-        print(info)
-        sys.exit()
+        self.set_download_dir(path)
+        fsids = self.recursive_get_fsids()
+        self.extractor.set_fsids(fsids)
 
     def delete_files(self, path):
         path_p = ''
