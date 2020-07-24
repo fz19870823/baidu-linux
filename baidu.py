@@ -171,7 +171,6 @@ def main():
             help_c()
         else:
             print('错误的命令！')
-        pass
 
 
 while True:
