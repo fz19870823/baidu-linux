@@ -3,20 +3,46 @@ import configparser
 import sys
 import shlex
 import webbrowser
+import os
 # import getopt
 
-import aria2
-from account import Account
-from function import help_c, print_dir_info, trans_info_to_path
 
 headers = {
     'User-Agent': 'pan.baidu.com'
 }
-
 config = configparser.ConfigParser()
 config.read('config.ini')
-client_id = config['api_config']['client_id']
-client_secret = config['api_config']['client_secret']
+try:
+    client_id = config['api_config']['client_id']
+    client_secret = config['api_config']['client_secret']
+except KeyError:
+    print('未发现配置文件，手动设置......')
+    config.add_section('api_config')
+    config['api_config']['client_id'] = input('输入client_id：')
+    config['api_config']['client_secret'] = input('输入client_secret：')
+    config.add_section('aria2')
+    config['aria2']['rpc'] = input('输入rpc地址：')
+    config['aria2']['secret'] = input('输入rpc令牌：')
+    config['aria2']['port'] = input('输入rpc端口：')
+    use_https = input('是否使用https？(y/n)')
+    if use_https == 'y':
+        config['aria2']['schema'] = 'https'
+    elif use_https == 'n':
+        config['aria2']['schema'] = 'http'
+    else:
+        print('错误参数！')
+        main()
+    with open('config.ini' ,'w') as cf_file:
+        config.write(cf_file)
+        cf_file.close()
+    client_id = config['api_config']['client_id']
+    client_secret = config['api_config']['client_secret']
+
+
+
+import aria2
+from account import Account
+from function import help_c, print_dir_info, trans_info_to_path
 
 
 def login():
@@ -49,6 +75,9 @@ def load():
     accounts_list.remove('api_config')
     accounts_list.remove('aria2')
     i = 1
+    if len(accounts_list) == 0:
+        print('未找到任何账号！新建....')
+        return login()
     print('有以下账号，请选择使用的账号：')
     for account_name in accounts_list:
         print('%s. %s' % (i, account_name))
