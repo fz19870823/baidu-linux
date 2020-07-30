@@ -3,7 +3,7 @@ import configparser
 import sys
 import shlex
 import webbrowser
-import os
+# import os
 # import getopt
 
 
@@ -31,7 +31,7 @@ except KeyError:
         config['aria2']['schema'] = 'http'
     else:
         print('错误参数！')
-        main()
+        raise KeyError
     with open('config.ini' ,'w') as cf_file:
         config.write(cf_file)
         cf_file.close()
