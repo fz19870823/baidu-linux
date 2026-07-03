@@ -69,7 +69,7 @@ class Account:
 
     def get_account_info(self, code):
         info = requests.get('https://openapi.baidu.com/oauth/2.0/token?grant_type=authorization_code&'
-                            'code=%s&client_id=%s&client_secret=%s' % (code, client_id, client_secret)).json()
+                            'code=%s&client_id=%s&client_secret=%s' % (code, client_id, client_secret), timeout=15).json()
         self.access_token = info['access_token']
         self.refresh_token = info['refresh_token']
         self.scope = info['scope']
@@ -99,7 +99,7 @@ class Account:
             # 'showempty': '1',
             'access_token': self.access_token
         }
-        res = requests.get(api_url, params=params, headers=headers).json()
+        res = requests.get(api_url, params=params, headers=headers, timeout=15).json()
         # print(res)
         info_list = res['list']
         return info_list
@@ -117,7 +117,7 @@ class Account:
             # 'showempty': '1',
             'access_token': self.access_token
         }
-        res = requests.get(api_url, params=params, headers=headers).json()
+        res = requests.get(api_url, params=params, headers=headers, timeout=15).json()
         # print(res)
         info_list = res['list']
         return info_list
@@ -139,7 +139,7 @@ class Account:
             # 'showempty': '1',
             'access_token': self.access_token
         }
-        res = requests.get(api_url, params=params, headers=headers).json()
+        res = requests.get(api_url, params=params, headers=headers, timeout=15).json()
         er_code = res['errno']
         if er_code == 0:
             for bb in res['list']:
@@ -154,6 +154,7 @@ class Account:
             return None
 
     def recursive_get_fsids(self):
+        print(f'[account] recursive_get_fsids 路径: {self.download_dir}')
         api_url = 'https://pan.baidu.com/rest/2.0/xpan/multimedia?method=listall'
         params = {
             'path': self.download_dir,
@@ -161,25 +162,31 @@ class Account:
             'limit': 1000,
             'access_token': self.access_token
         }
-        res = requests.get(api_url, headers=headers, params=params).json()
+        res = requests.get(api_url, headers=headers, params=params, timeout=15).json()
         if res['errno'] == 0:
             fsids = []
             for item in res['list']:
                 if item['isdir'] == 0:
                     fsid = item['fs_id']
                     fsids.append(fsid)
+            print(f'[account] listall 返回 {len(res["list"])} 条, 其中 {len(fsids)} 个文件')
             if len(fsids) == 0:
+                print('[account] listall 无文件, 尝试 search_files...')
+                target_path = self.download_dir  # 保存原始目标路径
                 search_r = self.search_files(self.download_dir)
-                if search_r != None:
-                    self.set_download_dir(self.current_dir)
+                if search_r is not None:
+                    # 仅匹配精确路径，避免同名文件混入
                     for item in search_r:
-                        if item['isdir'] == 0:
-                            fsid = item['fs_id']
-                            fsids.append(fsid)
+                        if item['isdir'] == 0 and item['path'] == target_path:
+                            fsids.append(item['fs_id'])
+                    if len(fsids) > 0:
+                        # 文件下载：download_dir 设为父目录，方便 aria2 计算相对路径
+                        self.download_dir = str(PurePosixPath(target_path).parent)
+                    print(f'[account] search_files 找到 {len(fsids)} 个文件 (精确路径匹配)')
             return fsids
         else:
-            print('错误，代码%s' % res['errno'])
-            print(res)
+            print(f'[account] listall 错误, errno={res["errno"]}')
+            print(f'[account] {res}')
             return
 
     def set_fsids(self, path):
@@ -240,7 +247,7 @@ class Account:
     def refresh_ac_token(self):
         api_url = 'https://openapi.baidu.com/oauth/2.0/token?grant_type=refresh_token&refresh_token=%s' \
                   '&client_id=%s&client_secret=%s' % (self.refresh_token, client_id, client_secret)
-        res = requests.get(api_url).json()
+        res = requests.get(api_url, timeout=15).json()
         new_access_token = res['access_token']
         new_refresh_token = res['refresh_token']
         new_scope = res['scope']
@@ -258,7 +265,7 @@ class Account:
             # 'showempty': '1',
             'access_token': self.access_token
         }
-        res = requests.get(api_url, params=params, headers=headers).json()
+        res = requests.get(api_url, params=params, headers=headers, timeout=15).json()
         errno = res['errno']
         if errno == 0:
             pass
@@ -285,7 +292,7 @@ class Account:
             'recursion': 1,
             'access_token': self.access_token
         }
-        res = requests.get(api_url, headers=headers, params=params).json()
+        res = requests.get(api_url, headers=headers, params=params, timeout=15).json()
         errno = res['errno']
         if errno == 0:
             result = res['list']
